@@ -1,0 +1,7 @@
+# This is the list of shows to watch
+ids:
+  - 6048596
+  - 1796960
+
+database:
+  path: ./db.bin
