@@ -16,13 +16,12 @@ type Database interface {
 
 type database struct {
 	path string
-	data *map[string]int
+	data map[string]int
 }
 
 // NewDatabase creates a new instance of in memory database
 func NewDatabase(path string) Database {
-	db := make(map[string]int)
-	return &database{path, &db}
+	return &database{path, make(map[string]int)}
 }
 
 func (db *database) CreateIfMissing() error {
@@ -38,7 +37,7 @@ func (db *database) Load() error {
 
 	if err == nil {
 		decoder := gob.NewDecoder(file)
-		err = decoder.Decode(db.data)
+		err = decoder.Decode(&db.data)
 	}
 
 	file.Close()
@@ -51,7 +50,7 @@ func (db *database) Save() error {
 
 	if err == nil {
 		encoder := gob.NewEncoder(file)
-		encoder.Encode(db.data)
+		encoder.Encode(&db.data)
 	}
 
 	file.Close()
@@ -60,10 +59,10 @@ func (db *database) Save() error {
 }
 
 func (db *database) UpdateValue(k string, v int) {
-	(*db.data)[k] = v
+	db.data[k] = v
 }
 
 func (db *database) GetValue(k string) (int, bool) {
-	v, ok := (*db.data)[k]
+	v, ok := db.data[k]
 	return v, ok
 }

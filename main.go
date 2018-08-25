@@ -1,50 +1,14 @@
 package main
 
 import (
-	"encoding/gob"
 	"fmt"
-	"os"
+	"time"
 
 	"github.com/amir20/eztv-watcher/eztv"
 	"github.com/spf13/viper"
 )
 
-func loadDb(path string, object interface{}) error {
-	file, err := os.Open(path)
-	if err != nil {
-		err = saveDb(path, object)
-
-		if err != nil {
-			panic(fmt.Errorf("fatal error creating database: %s", err))
-		}
-
-		return nil
-	}
-
-	if err == nil {
-		decoder := gob.NewDecoder(file)
-		err = decoder.Decode(object)
-	}
-
-	file.Close()
-
-	return err
-}
-
-func saveDb(path string, object interface{}) error {
-	file, err := os.Create(path)
-
-	if err == nil {
-		encoder := gob.NewEncoder(file)
-		encoder.Encode(object)
-	}
-
-	file.Close()
-
-	return err
-}
-
-func main() {
+func init() {
 	viper.SetConfigName("config")
 	viper.AddConfigPath("$HOME/.config/eztv")
 	viper.AddConfigPath(".")
@@ -52,9 +16,11 @@ func main() {
 	if err != nil {
 		panic(fmt.Errorf("fatal error reading config file: %s", err))
 	}
+}
 
+func main() {
 	database := NewDatabase(viper.GetString("database.path"))
-	err = database.CreateIfMissing()
+	err := database.CreateIfMissing()
 	if err != nil {
 		panic(fmt.Errorf("fatal error creating database: %s", err))
 	}
@@ -66,12 +32,16 @@ func main() {
 
 	for _, id := range viper.GetStringSlice("ids") {
 		response, _ := eztv.FetchTorrents(id)
-		fmt.Printf("%+v\n", response.Torrents[0].Title)
-		if lastID, ok := database.GetValue(id); ok {
-			println(lastID)
-		}
 
-		database.UpdateValue(id, response.Torrents[0].ID)
+		var lastUpdated time.Time
+		if v, ok := database.GetValue(id); ok {
+			lastUpdated = time.Unix(int64(v), 0)
+		} else {
+			lastUpdated = time.Now().AddDate(0, 0, -7)
+		}
+		println(lastUpdated.String())
+
+		database.UpdateValue(id, response.Torrents[0].DateReleasedUnix)
 	}
 
 	err = database.Save()
