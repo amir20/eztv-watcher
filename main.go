@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os/user"
 	"path/filepath"
 	"strings"
 	"time"
@@ -15,11 +16,16 @@ func init() {
 	viper.AddConfigPath("$HOME/.config/eztv")
 	viper.AddConfigPath(".")
 
-	viper.SetDefault("database.path", "$HOME/.config/eztv/db.bin")
+	usr, err := user.Current()
+	if err != nil {
+		panic(fmt.Errorf("cannot find user's home directory: %s", err))
+	}
+
+	viper.SetDefault("database.path", filepath.Join(usr.HomeDir, ".config/eztv/db.bin"))
 	viper.SetDefault("matches.whitelist", []string{})
 	viper.SetDefault("matches.blacklist", []string{})
 
-	err := viper.ReadInConfig()
+	err = viper.ReadInConfig()
 	if err != nil {
 		panic(fmt.Errorf("fatal error reading config file: %s", err))
 	}
