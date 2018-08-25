@@ -3,5 +3,14 @@ ids:
   - 6048596
   - 1796960
 
+# Path to save the last fetched torrents
 database:
   path: ./db.bin
+
+matches:
+  whitelist:
+    - 264
+  blacklist:
+    - 720p
+
+torrent_watch_dir: ./test_downloads

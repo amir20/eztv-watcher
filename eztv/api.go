@@ -6,7 +6,8 @@ import (
 	"encoding/json"
 )
 
-func FetchTorrents(id string) (*EztvResponse, error) {
+// FetchTorrents returns a list of torrent for a given IMDB 
+func FetchTorrents(id string) (*Response, error) {
 	r, err := http.Get(fmt.Sprintf("https://eztv.ag/api/get-torrents?imdb_id=%s", id))
 	if err != nil {
 		return nil, err
@@ -14,7 +15,7 @@ func FetchTorrents(id string) (*EztvResponse, error) {
 		return nil, fmt.Errorf("none 200 response from [%s]", id)
 	}
 
-	response := &EztvResponse{}
+	response := &Response{}
 	if err = json.NewDecoder(r.Body).Decode(response); err != nil {
 		return nil, err
 	}

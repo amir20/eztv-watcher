@@ -2,6 +2,11 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/amir20/eztv-watcher/eztv"
@@ -39,7 +44,17 @@ func main() {
 		} else {
 			lastUpdated = time.Now().AddDate(0, 0, -7)
 		}
-		println(lastUpdated.String())
+
+		for _, torrent := range response.Torrents {
+			released := time.Unix(int64(torrent.DateReleasedUnix), 0)
+			if released.After(lastUpdated) && isNotBlacklisted(torrent) && isWhitelisted(torrent) {
+				fmt.Printf("Found a new torrent [%s].\n", torrent.Title)
+				f := filepath.Join(viper.GetString("torrent_watch_dir"), torrent.Filename+".torrent")
+				if err := downloadFile(f, torrent.TorrentURL); err != nil {
+					panic(fmt.Errorf("fatal error when writing torrent file [%s] with error %s", f, err))
+				}
+			}
+		}
 
 		database.UpdateValue(id, response.Torrents[0].DateReleasedUnix)
 	}
@@ -48,5 +63,44 @@ func main() {
 	if err != nil {
 		panic(fmt.Errorf("fatal error writing database: %s", err))
 	}
+}
 
+func isNotBlacklisted(torrent eztv.Torrent) bool {
+	for _, match := range viper.GetStringSlice("matches.blacklist") {
+		if strings.Contains(torrent.Title, match) {
+			return false
+		}
+	}
+	return true
+}
+
+func isWhitelisted(torrent eztv.Torrent) bool {
+	for _, match := range viper.GetStringSlice("matches.whitelist") {
+		if strings.Contains(torrent.Title, match) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func downloadFile(filepath string, url string) error {
+	out, err := os.Create(filepath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	_, err = io.Copy(out, resp.Body)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
