@@ -1,4 +1,4 @@
-package main
+package eztv
 
 type EztvResponse struct {
 	ImdbID        string `json:"imdb_id"`
