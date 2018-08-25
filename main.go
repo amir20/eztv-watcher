@@ -2,9 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io"
-	"net/http"
-	"os"
 	"path/filepath"
 	"strings"
 	"time"
@@ -17,6 +14,11 @@ func init() {
 	viper.SetConfigName("config")
 	viper.AddConfigPath("$HOME/.config/eztv")
 	viper.AddConfigPath(".")
+
+	viper.SetDefault("database.path", "$HOME/.config/eztv/db.bin")
+	viper.SetDefault("matches.whitelist", []string{})
+	viper.SetDefault("matches.blacklist", []string{})
+
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(fmt.Errorf("fatal error reading config file: %s", err))
@@ -36,6 +38,7 @@ func main() {
 	}
 
 	for _, id := range viper.GetStringSlice("ids") {
+		fmt.Printf("Checking [%s].\n", id)
 		response, _ := eztv.FetchTorrents(id)
 
 		var lastUpdated time.Time
@@ -50,13 +53,15 @@ func main() {
 			if released.After(lastUpdated) && isNotBlacklisted(torrent) && isWhitelisted(torrent) {
 				fmt.Printf("Found a new torrent [%s].\n", torrent.Title)
 				f := filepath.Join(viper.GetString("torrent_watch_dir"), torrent.Filename+".torrent")
-				if err := downloadFile(f, torrent.TorrentURL); err != nil {
+				if err := DownloadFile(f, torrent.TorrentURL); err != nil {
 					panic(fmt.Errorf("fatal error when writing torrent file [%s] with error %s", f, err))
 				}
 			}
 		}
 
-		database.UpdateValue(id, response.Torrents[0].DateReleasedUnix)
+		if len(response.Torrents) > 0 {
+			database.UpdateValue(id, response.Torrents[0].DateReleasedUnix)
+		}
 	}
 
 	err = database.Save()
@@ -82,25 +87,4 @@ func isWhitelisted(torrent eztv.Torrent) bool {
 	}
 
 	return false
-}
-
-func downloadFile(filepath string, url string) error {
-	out, err := os.Create(filepath)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	resp, err := http.Get(url)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	_, err = io.Copy(out, resp.Body)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

@@ -1,9 +1,8 @@
-# This is the list of shows to watch
 ids:
   - 6048596
   - 1796960
+  - 0898266
 
-# Path to save the last fetched torrents
 database:
   path: ./db.bin
 
