@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"os/user"
 	"path/filepath"
 	"strings"
@@ -19,7 +19,7 @@ func init() {
 
 	usr, err := user.Current()
 	if err != nil {
-		panic(fmt.Errorf("cannot find user's home directory: %s", err))
+		log.Fatalf("Cannot find current user's home directory: %s", err)
 	}
 
 	viper.SetDefault("database.path", filepath.Join(usr.HomeDir, ".config/eztv/db.bin"))
@@ -28,7 +28,7 @@ func init() {
 
 	err = viper.ReadInConfig()
 	if err != nil {
-		panic(fmt.Errorf("fatal error reading config file: %s", err))
+		log.Fatalf("config.yml not found.\n%s", err)
 	}
 }
 
@@ -36,20 +36,20 @@ func main() {
 	database := NewDatabase(viper.GetString("database.path"))
 	err := database.CreateIfMissing()
 	if err != nil {
-		panic(fmt.Errorf("fatal error creating database: %s", err))
+		log.Fatalf("Could not write database file. Error: %s", err)
 	}
 
 	err = database.Load()
 	if err != nil {
-		panic(fmt.Errorf("fatal error loading database: %s", err))
+		log.Fatalf("Error reading config file: %s", err)
 	}
 
 	for _, id := range viper.GetStringSlice("ids") {
-		fmt.Printf("Checking [%s].\n", id)
+		log.Printf("Checking [%s].\n", id)
 		response, err := eztv.FetchTorrents(id)
 
 		if err != nil {
-			panic(fmt.Errorf("error when fetching torrents from EZTV: %s", err))
+			log.Fatalf("Error fetching torrents from EZTV: %s", err)
 		}
 
 		var lastUpdated time.Time
@@ -62,10 +62,10 @@ func main() {
 		for _, torrent := range response.Torrents {
 			released := time.Unix(int64(torrent.DateReleasedUnix), 0)
 			if released.After(lastUpdated) && isNotBlacklisted(torrent) && isWhitelisted(torrent) {
-				fmt.Printf("Found a new torrent [%s].\n", torrent.Title)
+				log.Printf("Found a new torrent [%s].\n", torrent.Title)
 				f := filepath.Join(viper.GetString("torrent_watch_dir"), torrent.Filename+".torrent")
 				if err := DownloadFile(f, torrent.TorrentURL); err != nil {
-					panic(fmt.Errorf("fatal error when writing torrent file [%s] with error %s", f, err))
+					log.Fatalf("Could not write torrent file [%s]. Error %s", f, err)
 				}
 			}
 		}
@@ -77,7 +77,7 @@ func main() {
 
 	err = database.Save()
 	if err != nil {
-		panic(fmt.Errorf("fatal error writing database: %s", err))
+		log.Fatalf("Could not save database file. Error %s", err)
 	}
 }
 
