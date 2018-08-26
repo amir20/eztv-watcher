@@ -46,7 +46,11 @@ func main() {
 
 	for _, id := range viper.GetStringSlice("ids") {
 		fmt.Printf("Checking [%s].\n", id)
-		response, _ := eztv.FetchTorrents(id)
+		response, err := eztv.FetchTorrents(id)
+
+		if err != nil {
+			panic(fmt.Errorf("error when fetching torrents from EZTV: %s", err))
+		}
 
 		var lastUpdated time.Time
 		if v, ok := database.GetValue(id); ok {
