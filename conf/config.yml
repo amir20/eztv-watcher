@@ -1,0 +1,10 @@
+ids:
+  - 6048596
+
+matches:
+  whitelist:
+    - 264
+  blacklist:
+    - 720p
+
+torrent_watch_dir: /home/user/torrents

@@ -25,3 +25,29 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
+
+nfpm:
+  # You can change the name of the package.
+  # Default: `{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}`
+  name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+  # Replacements for GOOS and GOARCH in the package name.
+  # Keys should be valid GOOSs or GOARCHs.
+  # Values are the respective replacements.
+  # Default is empty.
+  replacements:
+    amd64: 64-bit
+    386: 32-bit
+    darwin: macOS
+    linux: Tux
+
+  vendor: Amir Raminfar
+  homepage: https://github.com/amir20/eztv-watcher/
+  maintainer: Amir Raminfar <findamir@gmail.com>
+  description: Watches for torrent on EZTV and places them in a folder for client to pick up
+  license: Apache 2.0
+  formats:
+    - deb
+    - rpm
+  config_files:
+    "conf/*.yml": "/etc/eztv/"

@@ -13,6 +13,7 @@ import (
 
 func init() {
 	viper.SetConfigName("config")
+	viper.AddConfigPath("/etc/eztv")
 	viper.AddConfigPath("$HOME/.config/eztv")
 	viper.AddConfigPath(".")
 
