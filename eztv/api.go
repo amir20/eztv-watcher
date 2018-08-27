@@ -1,9 +1,9 @@
 package eztv
 
 import (
-	"net/http"
-	"fmt"
 	"encoding/json"
+	"fmt"
+	"net/http"
 )
 
 // FetchTorrents returns a list of torrent for a given IMDB 
