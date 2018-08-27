@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/gob"
 	"os"
+	"path/filepath"
 )
 
 // Database represent a map on disk
@@ -26,6 +27,10 @@ func NewDatabase(path string) Database {
 
 func (db *database) CreateIfMissing() error {
 	if _, err := os.Stat(db.path); os.IsNotExist(err) {
+		dir := filepath.Dir(db.path)
+		if err := os.MkdirAll(dir, 0700); err != nil {
+			return err
+		}
 		return db.Save()
 	}
 
