@@ -1,9 +1,12 @@
 .PHONY: git, build, release
 
-clean: 
+config_generate.go:
+	go generate
+
+clean:
 	rm config_generated.go
 
-build:
+build: config_generate.go
 	go build
 
 bump:
