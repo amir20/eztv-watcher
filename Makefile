@@ -1,17 +1,19 @@
-.PHONY: git, build, release
-
-config_generate.go:
+config_generated.go: conf/config.yml
 	go generate
 
+.PHONY: clean
 clean:
 	rm config_generated.go
 
-build: config_generate.go
+.PHONY: build
+build: config_generated.go
 	go build
 
+.PHONY: bump
 bump:
 	$(eval VERSION=$(shell git describe --tags --abbrev=0 | awk -F. '{$$NF+=1; OFS="."; print $0}'))
 	@git tag -a $(VERSION) -m "Bumping to $(VERSION)"
 
+.PHONY: release
 release:
 	@goreleaser --rm-dist
