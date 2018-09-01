@@ -32,7 +32,7 @@ func init() {
 	}
 }
 
-// go:generate go run gen.go
+//go:generate go run gen.go
 
 func main() {
 	println(string(ConfigFileTemplate))
