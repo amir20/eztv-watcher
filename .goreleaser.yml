@@ -45,5 +45,3 @@ nfpm:
   formats:
     - deb
     - rpm
-  config_files:
-    "conf/config.yml": "/etc/eztv/config.yml"

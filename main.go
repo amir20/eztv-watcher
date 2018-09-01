@@ -2,12 +2,12 @@ package main
 
 import (
 	"log"
-	"os/user"
 	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/amir20/eztv-watcher/eztv"
+	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
 
@@ -17,12 +17,12 @@ func init() {
 	viper.AddConfigPath("$HOME/.config/eztv")
 	viper.AddConfigPath(".")
 
-	usr, err := user.Current()
+	home, err := homedir.Dir()
 	if err != nil {
 		log.Fatalf("Cannot find current user's home directory: %s", err)
 	}
 
-	viper.SetDefault("database.path", filepath.Join(usr.HomeDir, ".config/eztv/db.bin"))
+	viper.SetDefault("database.path", filepath.Join(home, ".config/eztv/db.bin"))
 	viper.SetDefault("matches.whitelist", []string{})
 	viper.SetDefault("matches.blacklist", []string{})
 
@@ -32,7 +32,11 @@ func init() {
 	}
 }
 
+// go:generate go run gen.go
+
 func main() {
+	println(string(ConfigFileTemplate))
+
 	database := NewDatabase(viper.GetString("database.path"))
 	err := database.CreateIfMissing()
 	if err != nil {

@@ -15,3 +15,7 @@
 *.bin
 
 dist/
+
+config_generated.go
+
+eztv-watcher
