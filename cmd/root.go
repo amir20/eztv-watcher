@@ -31,7 +31,7 @@ var rootCmd = &cobra.Command{
 	Short: "A brief description of your application",
 
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("This is a root command")
+		cmd.Help()
 	},
 }
 
