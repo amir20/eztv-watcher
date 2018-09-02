@@ -1,12 +1,12 @@
-config_generated.go: conf/config.yml
+watcher/config_generated.go: conf/config.yml
 	go generate
 
 .PHONY: clean
 clean:
-	rm config_generated.go
+	rm watcher/config_generated.go
 
 .PHONY: build
-build: config_generated.go
+build: watcher/config_generated.go
 	go build
 
 .PHONY: bump

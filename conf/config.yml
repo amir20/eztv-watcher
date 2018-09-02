@@ -1,10 +1,13 @@
+# This is a list of IMDB ids that should be fetched
 ids:
   - 6048596
 
+# Whitelist and blacklist for filenames when fetching torrents
 matches:
   whitelist:
     - 264
   blacklist:
     - 720p
 
+# Folder to copy the torrents   
 torrent_watch_dir: /home/user/torrents
