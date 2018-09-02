@@ -29,10 +29,6 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "eztv-watcher",
 	Short: "A brief description of your application",
-
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
-	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
