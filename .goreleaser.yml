@@ -1,9 +1,11 @@
 before:
   hooks:
-  - make build
+    - make build
 builds:
   - env:
       - CGO_ENABLED=0
+    ldflags:
+      - -s -w -X 'github.com/amir20/eztv-watcher/cmd.version={{.Version}}'
     goos:
       - linux
       - darwin
