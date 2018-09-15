@@ -9,5 +9,5 @@ matches:
   blacklist:
     - 720p
 
-# Folder to copy the torrents   
+# Folder to copy the torrents
 torrent_watch_dir: /home/user/torrents

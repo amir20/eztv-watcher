@@ -1,6 +1,6 @@
 before:
   hooks:
-  - make config_generated.go
+  - make build
 builds:
   - env:
       - CGO_ENABLED=0

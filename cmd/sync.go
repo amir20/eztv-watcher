@@ -19,7 +19,7 @@ func init() {
 // initCmd represents the init command
 var syncCmd = &cobra.Command{
 	Use:   "sync",
-	Short: "A brief description of your command",
+	Short: "Syncs bittorrents by fetching each show and downloading new shows.",
 	Run: func(cmd *cobra.Command, args []string) {
 		database := watcher.NewDatabase(viper.GetString("database.path"))
 		err := database.CreateIfMissing()

@@ -4,6 +4,7 @@ watcher/config_generated.go: conf/config.yml
 .PHONY: clean
 clean:
 	rm watcher/config_generated.go
+	rm eztv-watcher
 
 .PHONY: build
 build: watcher/config_generated.go
