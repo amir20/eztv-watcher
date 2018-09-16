@@ -50,3 +50,6 @@ nfpm:
   formats:
     - deb
     - rpm
+
+dockers:
+  - image: amir20/eztv-watcher
