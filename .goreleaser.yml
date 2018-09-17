@@ -53,3 +53,7 @@ nfpm:
 
 dockers:
   - image: amir20/eztv-watcher
+    tag_templates:
+    - "{{ .Tag }}"
+    - "v{{ .Major }}.{{ .Minor }}"
+    - latest
