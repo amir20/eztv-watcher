@@ -21,6 +21,10 @@ var syncCmd = &cobra.Command{
 	Use:   "sync",
 	Short: "Syncs bittorrents by fetching each show and downloading new shows.",
 	Run: func(cmd *cobra.Command, args []string) {
+		if err := viper.ReadInConfig(); err != nil {
+			log.Fatalf("config.yml not found.\n%s", err)
+		}
+
 		database := watcher.NewDatabase(viper.GetString("database.path"))
 		err := database.CreateIfMissing()
 		if err != nil {

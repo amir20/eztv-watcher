@@ -43,8 +43,4 @@ func initConfig() {
 	viper.SetDefault("database.path", filepath.Join(home, ".config/eztv/db.bin"))
 	viper.SetDefault("matches.whitelist", []string{})
 	viper.SetDefault("matches.blacklist", []string{})
-
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("config.yml not found.\n%s", err)
-	}
 }
