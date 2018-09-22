@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// FetchTorrents returns a list of torrent for a given IMDB 
+// FetchTorrents returns a list of torrent for a given IMDB
 func FetchTorrents(id string) (*Response, error) {
 	r, err := http.Get(fmt.Sprintf("https://eztv.ag/api/get-torrents?imdb_id=%s", id))
 	if err != nil {
