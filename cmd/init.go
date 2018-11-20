@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 
 	"github.com/amir20/eztv-watcher/watcher"
-	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 )
 
@@ -15,12 +14,7 @@ var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "Initializes config file for the first time",
 	Run: func(cmd *cobra.Command, args []string) {
-		home, err := homedir.Dir()
-		if err != nil {
-			log.Fatalf("Cannot find current user's home directory: %s", err)
-		}
-
-		path := filepath.Join(home, ".config/eztv/config.yml")
+		path := os.ExpandEnv("/home/$USER/.config/eztv")
 
 		if err := os.MkdirAll(filepath.Dir(path), 0700); err != nil {
 			log.Fatalf("Cannot create directory: %s\n%s", filepath.Dir(path), err)
