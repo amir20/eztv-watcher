@@ -13,18 +13,17 @@ builds:
       - amd64
       - arm
       - arm64
-archive:
-  replacements:
-    amd64: 64-bit
-    386: 32-bit
-    arm64: ARM_64-bit
-    arm: ARM_32-bit
-    linux: Linux
-    darwin: Darwin
+      - 386
+    goarm:
+      - 6
+      - 7
+
 checksum:
   name_template: "checksums.txt"
+
 snapshot:
   name_template: "{{ .Tag }}-next"
+
 changelog:
   sort: asc
   filters:
@@ -32,16 +31,18 @@ changelog:
       - "^docs:"
       - "^test:"
 
-nfpm:
-  name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
-  replacements:
-    amd64: 64-bit
-    386: 32-bit
-    arm64: ARM_64-bit
-    arm: ARM_32-bit
-    linux: Linux
-    darwin: macOS
+snapcraft:
+  publish: true
+  summary: eztv-watcher is a command line utility which monitors shows on eztv and downloads torrents to a desired directory.
+  description: |
+    eztv-watcher is a command line utility which monitors shows on eztv and downloads torrents to a desired directory.
+  grade: stable
+  confinement: strict
+  apps:
+    eztv-watcher:
+      plugs: ["network"]
 
+nfpm:
   vendor: Amir Raminfar
   homepage: https://github.com/amir20/eztv-watcher/
   maintainer: Amir Raminfar <findamir@gmail.com>
@@ -54,6 +55,6 @@ nfpm:
 dockers:
   - image: amir20/eztv-watcher
     tag_templates:
-    - "{{ .Tag }}"
-    - "v{{ .Major }}.{{ .Minor }}"
-    - latest
+      - "{{ .Tag }}"
+      - "v{{ .Major }}.{{ .Minor }}"
+      - latest

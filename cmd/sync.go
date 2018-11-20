@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"path/filepath"
 	"strings"
@@ -59,6 +60,7 @@ var syncCmd = &cobra.Command{
 					if err := watcher.DownloadFile(f, torrent.TorrentURL); err != nil {
 						log.Fatalf("Could not write torrent file [%s]. Error %s", f, err)
 					}
+					fmt.Printf("Downloading a new episode [%s].\n", torrent.Title)
 				}
 			}
 
