@@ -14,7 +14,7 @@ var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "Initializes config file for the first time",
 	Run: func(cmd *cobra.Command, args []string) {
-		path := os.ExpandEnv("/home/$USER/.config/eztv")
+		path := os.ExpandEnv("/home/$USER/.config/eztv/config.yml")
 
 		if err := os.MkdirAll(filepath.Dir(path), 0700); err != nil {
 			log.Fatalf("Cannot create directory: %s\n%s", filepath.Dir(path), err)
