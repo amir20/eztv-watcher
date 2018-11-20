@@ -30,9 +30,9 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-  viper.SetConfigName("config")
-  viper.AddConfigPath("/etc/eztv")
-  viper.AddConfigPath("/home/$USER/.config/eztv")
+	viper.SetConfigName("config")
+	viper.AddConfigPath("/etc/eztv")
+	viper.AddConfigPath(os.ExpandEnv("/home/$USER/.config/eztv"))
 	viper.AddConfigPath("$HOME/.config/eztv")
 	viper.AddConfigPath(".")
 
