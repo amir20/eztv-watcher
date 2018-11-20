@@ -40,7 +40,7 @@ snapcraft:
   confinement: strict
   apps:
     eztv-watcher:
-      plugs: ["network"]
+      plugs: ["home", "network"]
 
 nfpm:
   vendor: Amir Raminfar
