@@ -2,11 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"os"
-	"path/filepath"
 
-	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -35,13 +32,7 @@ func initConfig() {
 	viper.AddConfigPath(os.ExpandEnv("/home/$USER/.config/eztv"))
 	viper.AddConfigPath("$HOME/.config/eztv")
 	viper.AddConfigPath(".")
-
-	home, err := homedir.Dir()
-	if err != nil {
-		log.Fatalf("Cannot find current user's home directory: %s", err)
-	}
-
-	viper.SetDefault("database.path", filepath.Join(home, ".config/eztv/db.bin"))
+	viper.SetDefault("database.path", os.ExpandEnv("/home/$USER/.config/eztv/db.bin"))
 	viper.SetDefault("matches.whitelist", []string{})
 	viper.SetDefault("matches.blacklist", []string{})
 }
