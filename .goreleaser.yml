@@ -53,8 +53,7 @@ nfpm:
     - rpm
 
 dockers:
-  - image: amir20/eztv-watcher
-    tag_templates:
-      - "{{ .Tag }}"
-      - "v{{ .Major }}.{{ .Minor }}"
-      - latest
+  - image_templates:
+      - "amir20/eztv-watcher:{{ .Tag }}"
+      - "amir20/eztv-watcher:v{{ .Major }}.{{ .Minor }}"
+      - amir20/eztv-watcherdozzle:latest
