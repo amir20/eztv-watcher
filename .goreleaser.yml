@@ -42,16 +42,6 @@ snapcraft:
     eztv-watcher:
       plugs: ["home", "network"]
 
-nfpm:
-  vendor: Amir Raminfar
-  homepage: https://github.com/amir20/eztv-watcher/
-  maintainer: Amir Raminfar <findamir@gmail.com>
-  description: Watches for torrent on EZTV and places them in a folder for client to pick up
-  license: Apache 2.0
-  formats:
-    - deb
-    - rpm
-
 dockers:
   - image_templates:
       - "amir20/eztv-watcher:{{ .Tag }}"
