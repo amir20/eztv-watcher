@@ -9,12 +9,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// initCmd represents the init command
 var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "Initializes config file for the first time",
 	Run: func(cmd *cobra.Command, args []string) {
-		path := os.ExpandEnv("/home/$USER/.config/eztv/config.yml")
+		var path string
+		if _, ok := os.LookupEnv("SNAP_USER_COMMON"); ok {
+			path = os.ExpandEnv("$SNAP_USER_COMMON/config.yml")
+		} else {
+			path = os.ExpandEnv("$HOME/.config/eztv/config.yml")
+		}
 
 		if err := os.MkdirAll(filepath.Dir(path), 0700); err != nil {
 			log.Fatalf("Cannot create directory: %s\n%s", filepath.Dir(path), err)

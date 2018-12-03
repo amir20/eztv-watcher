@@ -10,7 +10,7 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "eztv-watcher",
-	Short: "Small CLI for fetching and synching TV show bittorrents from EZTV.",
+	Short: "Small CLI for fetching and syncing TV show bit torrents from EZTV.",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -29,10 +29,17 @@ func init() {
 func initConfig() {
 	viper.SetConfigName("config")
 	viper.AddConfigPath("/etc/eztv")
-	viper.AddConfigPath(os.ExpandEnv("/home/$USER/.config/eztv"))
+	if path, ok := os.LookupEnv("SNAP_USER_COMMON"); ok {
+		viper.AddConfigPath(path)
+	}
 	viper.AddConfigPath("$HOME/.config/eztv")
 	viper.AddConfigPath(".")
-	viper.SetDefault("database.path", os.ExpandEnv("/home/$USER/.config/eztv/db.bin"))
+	if _, ok := os.LookupEnv("SNAP_USER_COMMON"); ok {
+		viper.SetDefault("database.path", os.ExpandEnv("$SNAP_USER_COMMON/db.bin"))
+	} else {
+		viper.SetDefault("database.path", os.ExpandEnv("$HOME/.config/eztv/db.bin"))
+	}
+
 	viper.SetDefault("matches.whitelist", []string{})
 	viper.SetDefault("matches.blacklist", []string{})
 }
