@@ -40,7 +40,7 @@ snapcraft:
   confinement: strict
   apps:
     eztv-watcher:
-      plugs: ["home", "network"]
+      plugs: ["home", "network", "removable-media"]
 
 dockers:
   - image_templates:
